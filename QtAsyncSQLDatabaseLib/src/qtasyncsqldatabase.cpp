@@ -1,8 +1,5 @@
 #include "include/qtasyncsqldatabase.h"
 
-#include <QSqlQuery>
-#include <QDebug>
-
 QtAsyncSQLDatabase::QtAsyncSQLDatabase(const DatabaseConnectionConfig& conf) noexcept:
     conf(conf)
 {
@@ -17,21 +14,13 @@ QtAsyncSQLDatabase::~QtAsyncSQLDatabase() noexcept
 
 void QtAsyncSQLDatabase::open() noexcept
 {
-    qDebug() << "OPENING ";
-
     if (dbIsOpen)
     {
-        qDebug() << "OPENING ";
-
         return;
     }
-    qDebug() << "OPENING ";
-
     dbIsOpen = true;
-    qDebug() << "OPENING ";
     syncWorker.open();
     asyncWorker.start();
-    qDebug() << "OPENING ";
 }
 
 void QtAsyncSQLDatabase::close() noexcept
@@ -41,13 +30,9 @@ void QtAsyncSQLDatabase::close() noexcept
         return;
     }
     dbIsOpen = false;
-    qDebug() << "PROUT";
     syncWorker.close();
-    qDebug() << "PROUT2";
     asyncWorker.stop();
-    qDebug() << "PROUT3";
     asyncWorker.wait();
-    qDebug() << "PROUT4";
 }
 
 void QtAsyncSQLDatabase::setReadOnly(bool b) noexcept
