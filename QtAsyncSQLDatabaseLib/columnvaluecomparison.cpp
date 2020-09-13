@@ -1,4 +1,4 @@
-#include "include/columnvaluecomparison.h"
+#include "columnvaluecomparison.h"
 
 const QMap<Operator, QString> ColumnValueComparison::cmpAsString
 {

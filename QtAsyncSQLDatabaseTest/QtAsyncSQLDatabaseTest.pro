@@ -9,16 +9,17 @@ CONFIG += qt
 QT += core sql
 
 HEADERS += \
-    tst_databaseworker.h \
-    "../QtAsyncSQLDatabaseLib/include/databaseworker.h" \
-    "../QtAsyncSQLDatabaseLib/include/querythread.h" \
-    "../QtAsyncSQLDatabaseLib/include/columnvaluecomparison.h"
+    tst_asyncsqldatabase.h \
+    tst_sqldatabase.h \
+    ../QtAsyncSQLDatabaseLib/sqldatabase.h \
+    ../QtAsyncSQLDatabaseLib/asyncsqldatabase.h \
+    ../QtAsyncSQLDatabaseLib/columnvaluecomparison.h
 
 SOURCES += \
         main.cpp \
-        ../QtAsyncSQLDatabaseLib/src/databaseworker.cpp \
-        ../QtAsyncSQLDatabaseLib/src/querythread.cpp \
-        ../QtAsyncSQLDatabaseLib/src/columnvaluecomparison.cpp
+        ../QtAsyncSQLDatabaseLib/sqldatabase.cpp \
+        ../QtAsyncSQLDatabaseLib/asyncsqldatabase.cpp \
+        ../QtAsyncSQLDatabaseLib/columnvaluecomparison.cpp
 
 INCLUDEPATH += \
         ../QtAsyncSQLDatabaseLib/

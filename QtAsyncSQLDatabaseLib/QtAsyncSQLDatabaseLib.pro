@@ -11,17 +11,15 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    src/columnvaluecomparison.cpp \
-    src/databaseworker.cpp \
-    src/qtasyncsqldatabase.cpp \
-    src/querythread.cpp
+    asyncsqldatabase.cpp \
+    columnvaluecomparison.cpp \
+    sqldatabase.cpp
 
 HEADERS += \
-    "include/columnvaluecomparison.h" \
-    "include/databaseconnectionconfig.h" \
-    "include/databaseworker.h" \
-    "include/qtasyncsqldatabase.h" \
-    "include/querythread.h"
+    asyncsqldatabase.h \
+    columnvaluecomparison.h \
+    sqldatabase.h \
+    sqldatabaseconnectionconfig.h
 
 # Default rules for deployment.
 unix {

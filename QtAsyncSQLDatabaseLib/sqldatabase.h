@@ -1,32 +1,26 @@
-#ifndef DATABASEWORKER_H
-#define DATABASEWORKER_H
+#ifndef DATABASE_H
+#define DATABASE_H
 
 #include <QObject>
 #include <QVector>
 #include <QString>
 #include <QSqlDatabase>
-#include <QMutex>
-#include <QMetaType>
-
-#include <atomic>
 
 #include "columnvaluecomparison.h"
-#include "databaseconnectionconfig.h"
+#include "sqldatabaseconnectionconfig.h"
 
 /*!
  * \brief Builds and executes SQL queries.
  * Owns a database connection.
  */
-class DatabaseWorker : public QObject
+class SqlDatabase : public QObject
 {
     Q_OBJECT
   public:
-    DatabaseWorker() = delete;
-    explicit DatabaseWorker(const QString& connectionName,
+    SqlDatabase() = delete;
+    explicit SqlDatabase(const QString& connectionName,
                             const DatabaseConnectionConfig& conf,
                             QObject* parent = nullptr) noexcept;
-    ~DatabaseWorker() noexcept;
-
 
     [[nodiscard]] QStringList select(const QVector<QString>& what,
                                      const QString& from,
@@ -42,15 +36,21 @@ class DatabaseWorker : public QObject
     void remove(const QString& from, const QVector<ColumnValueComparison>& where) const noexcept;
     QStringList rawExecRequest(const QString& query) const noexcept;
 
-    void emitACK() const noexcept;
+    void answerACK() const noexcept;
 
   signals:
     void ACK() const;
 
   private:
     const QString connectionName;
+    DatabaseConnectionConfig conf;
 
-    inline QSqlDatabase db() const noexcept {return QSqlDatabase::database(connectionName);}
+    [[nodiscard]] inline QSqlDatabase db() const noexcept
+    {return QSqlDatabase::database(connectionName, true);}
+
+    static QString addWhere(QString query, const QVector<ColumnValueComparison>& where) noexcept;
+    static QStringList execRequest(QSqlQuery query) noexcept;
+
 };
 
-#endif  // DATABASEWORKER_H
+#endif  // DATABASE_H

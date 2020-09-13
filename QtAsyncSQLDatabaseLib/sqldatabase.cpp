@@ -1,60 +1,18 @@
-#include "include/databaseworker.h"
+#include "sqldatabase.h"
 
 #include <QDebug>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QSqlError>
 
-namespace  // Non-member utility functions
-{
-QString addWhere(QString query, const QVector<ColumnValueComparison>& where) noexcept
-{
-    for (int i = 0; i < where.size(); ++i)
-    {
-        if (i == 0)
-        {
-            query += " WHERE ";
-        }
-        query += QString("%1 %2 ?").arg(where[i].col, where[i].stringCmp());
-        if (i != where.size() - 1)
-        {
-            query += " AND ";
-        }
-    }
-    return query;
-}
-
-QStringList execRequest(QSqlQuery query) noexcept
-{
-    if (query.exec() == false)
-    {
-        qDebug() << "Database Error :" << query.lastError() << "on query" << query.executedQuery();
-        return {};
-    }
-
-    if (query.isSelect())
-    {
-        auto res {QStringList()};
-        while (query.next())
-        {
-            for (int i = 0; i < query.record().count(); ++i)
-            {
-                res << query.value(i).toString();
-            }
-        }
-        return res;
-    }
-    else
-    {
-        return {};
-    }
-}
-}
-
-DatabaseWorker::DatabaseWorker(const QString& connectionName,
+SqlDatabase::SqlDatabase(const QString& connectionName,
                                const DatabaseConnectionConfig& conf,
                                QObject* parent) noexcept:
-    QObject(parent), connectionName(connectionName)
+    QObject(parent), connectionName(connectionName), conf(conf)
+{
+}
+
+void SqlDatabase::open() const noexcept
 {
     auto database {QSqlDatabase::addDatabase(conf.driver, connectionName)};
     database.setDatabaseName(conf.databaseName);
@@ -63,49 +21,16 @@ DatabaseWorker::DatabaseWorker(const QString& connectionName,
     database.setHostName(conf.hostName);
     database.setPort(conf.port);
     database.setConnectOptions(conf.connectOptions);
+    // Create the database file
+    database.open();
 }
 
-DatabaseWorker::~DatabaseWorker() noexcept
+void SqlDatabase::close() const noexcept
 {
-    close();
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-void DatabaseWorker::open() const noexcept
-{
-    auto database {db()};
-    if (database.isOpen())
-    {
-        return;
-    }
-    if (database.open() == false)
-    {
-        qDebug() << "Cannot open the database. Not writing nor fetching data.\n";
-    }
-}
-
-void DatabaseWorker::close() const noexcept
-{
-    auto database {db()};
-    if (database.isOpen() == false)
-    {
-        return;
-    }
-    db().close();
-}
-
-QStringList DatabaseWorker::rawExecRequest(const QString& query) const noexcept
-{
-    return execRequest(QSqlQuery(query, db()));
-}
-
-void DatabaseWorker::emitACK() const noexcept
-{
-    // When this event is received, all prior events/requests have been processed
-    emit ACK();
-}
-
-QStringList DatabaseWorker::select(const QVector<QString>& what,
+QStringList SqlDatabase::select(const QVector<QString>& what,
                                    const QString& from,
                                    const QVector<ColumnValueComparison>& where) const noexcept
 {
@@ -121,6 +46,7 @@ QStringList DatabaseWorker::select(const QVector<QString>& what,
     }
     queryPrepare += QString(" FROM %1").arg(from);
     queryPrepare = addWhere(queryPrepare, where);
+
     auto query {QSqlQuery(db())};
     query.prepare(queryPrepare);
 
@@ -132,9 +58,10 @@ QStringList DatabaseWorker::select(const QVector<QString>& what,
     return execRequest(query);
 }
 
-void DatabaseWorker::insert(const QString& into,
+void SqlDatabase::insert(const QString& into,
                             const QVector<QString>& values) const noexcept
 {
+    qDebug() << "insert";
     // Build the query
     auto queryPrepare {QString("INSERT INTO %1 VALUES (").arg(into)};
     for (int i = 0; i < values.size(); ++i)
@@ -158,7 +85,7 @@ void DatabaseWorker::insert(const QString& into,
     execRequest(query);
 }
 
-void DatabaseWorker::update(const QString& table,
+void SqlDatabase::update(const QString& table,
                             const QVector<ColumnValueComparison>& set,
                             const QVector<ColumnValueComparison>& where) const noexcept
 {
@@ -189,7 +116,7 @@ void DatabaseWorker::update(const QString& table,
     execRequest(query);
 }
 
-void DatabaseWorker::remove(const QString& from,
+void SqlDatabase::remove(const QString& from,
                             const QVector<ColumnValueComparison>& where) const noexcept
 {
     // Build the query
@@ -205,4 +132,61 @@ void DatabaseWorker::remove(const QString& from,
         query.addBindValue(w.value);
     }
     execRequest(query);
+}
+
+QStringList SqlDatabase::rawExecRequest(const QString& query) const noexcept
+{
+    qDebug() << "rawExec";
+    auto sqlQuery {QSqlQuery(db())};
+    sqlQuery.prepare(query);
+    return execRequest(sqlQuery);
+}
+
+QString SqlDatabase::addWhere(QString query, const QVector<ColumnValueComparison>& where) noexcept
+{
+    for (int i = 0; i < where.size(); ++i)
+    {
+        if (i == 0)
+        {
+            query += " WHERE ";
+        }
+        query += QString("%1 %2 ?").arg(where[i].col, where[i].stringCmp());
+        if (i != where.size() - 1)
+        {
+            query += " AND ";
+        }
+    }
+    return query;
+}
+
+QStringList SqlDatabase::execRequest(QSqlQuery query) noexcept
+{
+    if (query.exec() == false)
+    {
+        qDebug() << "SqlDatabase Error :" << query.lastError() << "on query" << query.executedQuery();
+        return {};
+    }
+
+    if (query.isSelect())
+    {
+        auto res {QStringList()};
+        while (query.next())
+        {
+            for (int i = 0; i < query.record().count(); ++i)
+            {
+                res << query.value(i).toString();
+            }
+        }
+        return res;
+    }
+    else
+    {
+        return {};
+    }
+}
+
+void SqlDatabase::answerACK() const noexcept
+{
+    qDebug() << "answering ack";
+    emit ACK();
 }
