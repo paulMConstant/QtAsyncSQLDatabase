@@ -1,7 +1,6 @@
 #include "asyncsqldatabase.h"
 
 #include <QEventLoop>
-#include <QDebug>
 
 AsyncSqlDatabase::AsyncSqlDatabase(const QString& connectionName,
                                          const DatabaseConnectionConfig& conf,
@@ -78,9 +77,7 @@ void AsyncSqlDatabase::wait() const noexcept
         waitLoop.quit();
     }, Qt::QueuedConnection)};
 
-    qDebug() << "Ask for ack";
     emit askForACK();
     waitLoop.exec();
-    qDebug() << "Got ACK";
     disconnect(connection);
 }

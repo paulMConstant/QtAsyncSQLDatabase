@@ -61,7 +61,6 @@ QStringList SqlDatabase::select(const QVector<QString>& what,
 void SqlDatabase::insert(const QString& into,
                             const QVector<QString>& values) const noexcept
 {
-    qDebug() << "insert";
     // Build the query
     auto queryPrepare {QString("INSERT INTO %1 VALUES (").arg(into)};
     for (int i = 0; i < values.size(); ++i)
@@ -136,7 +135,6 @@ void SqlDatabase::remove(const QString& from,
 
 QStringList SqlDatabase::rawExecRequest(const QString& query) const noexcept
 {
-    qDebug() << "rawExec";
     auto sqlQuery {QSqlQuery(db())};
     sqlQuery.prepare(query);
     return execRequest(sqlQuery);
@@ -187,6 +185,5 @@ QStringList SqlDatabase::execRequest(QSqlQuery query) noexcept
 
 void SqlDatabase::answerACK() const noexcept
 {
-    qDebug() << "answering ack";
     emit ACK();
 }
