@@ -1,5 +1,5 @@
-#ifndef DATABASECONNECTIONCONFIG_H
-#define DATABASECONNECTIONCONFIG_H
+#ifndef SQLDATABASECONNECTIONCONFIG_H
+#define SQLDATABASECONNECTIONCONFIG_H
 
 #include <QString>
 
@@ -7,10 +7,10 @@
  * \brief Holds the configuration data to initialize a QSqlDatabase.
  * See QSqlDatabase documentation.
  */
-struct DatabaseConnectionConfig
+struct SqlDatabaseConnectionConfig
 {
-    DatabaseConnectionConfig() noexcept = default;
-    DatabaseConnectionConfig(const QString& databaseName,
+    SqlDatabaseConnectionConfig() noexcept = default;
+    SqlDatabaseConnectionConfig(const QString& databaseName,
                              const QString& driver = "QSQLITE",
                              const QString& userName = "",
                              const QString& password = "",
@@ -36,4 +36,4 @@ struct DatabaseConnectionConfig
     int port;
 };
 
-#endif // DATABASECONNECTIONCONFIG_H
+#endif // SQLDATABASECONNECTIONCONFIG_H

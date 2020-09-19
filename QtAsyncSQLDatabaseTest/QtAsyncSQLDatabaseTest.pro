@@ -8,6 +8,8 @@ CONFIG += qt
 
 QT += core sql
 
+LIBS += -L$$OUT_PWD/../QtAsyncDatabaseLib -lQtAsyncSQLDatabaseLib
+
 HEADERS += \
     tst_asyncsqldatabase.h \
     tst_sqldatabase.h \
@@ -16,10 +18,7 @@ HEADERS += \
     ../QtAsyncSQLDatabaseLib/columnvaluecomparison.h
 
 SOURCES += \
-        main.cpp \
-        ../QtAsyncSQLDatabaseLib/sqldatabase.cpp \
-        ../QtAsyncSQLDatabaseLib/asyncsqldatabase.cpp \
-        ../QtAsyncSQLDatabaseLib/columnvaluecomparison.cpp
+        main.cpp
 
 INCLUDEPATH += \
         ../QtAsyncSQLDatabaseLib/

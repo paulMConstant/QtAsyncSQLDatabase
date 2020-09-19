@@ -16,6 +16,7 @@ SOURCES += \
     sqldatabase.cpp
 
 HEADERS += \
+    QtAsyncSqlDatabase_global.h \
     asyncsqldatabase.h \
     columnvaluecomparison.h \
     sqldatabase.h \

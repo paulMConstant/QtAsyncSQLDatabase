@@ -24,7 +24,7 @@ protected:
 
     constexpr static auto databaseName {"testQSQLITE2.db"};
     constexpr static auto driver {"QSQLITE"};
-    const static DatabaseConnectionConfig conf;
+    const static SqlDatabaseConnectionConfig conf;
 
     constexpr static auto asyncConnectionName {"TestAsyncConnection"};
     constexpr static auto syncConnectionName {"TestSyncConnection"};
@@ -38,7 +38,7 @@ protected:
     SqlDatabase syncWorker {syncConnectionName, conf};
 };
 
-const DatabaseConnectionConfig AsyncDatabaseWorkerTest::conf = DatabaseConnectionConfig(databaseName, driver);
+const SqlDatabaseConnectionConfig AsyncDatabaseWorkerTest::conf = SqlDatabaseConnectionConfig(databaseName, driver);
 
 TEST_F(AsyncDatabaseWorkerTest, OpenSQLiteDatabase)
 {

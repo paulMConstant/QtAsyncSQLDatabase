@@ -24,7 +24,7 @@ protected:
 
     constexpr static auto databaseName {"testQSQLITE1.db"};
     constexpr static auto driver {"QSQLITE"};
-    const static DatabaseConnectionConfig conf;
+    const static SqlDatabaseConnectionConfig conf;
 
     constexpr static auto connectionName {"TestConnection1"};
     constexpr static auto tableName {"TestTable"};
@@ -34,7 +34,7 @@ protected:
     SqlDatabase dbWorker {connectionName, conf};
 };
 
-const DatabaseConnectionConfig DatabaseWorkerTest::conf =  DatabaseConnectionConfig(databaseName, driver);
+const SqlDatabaseConnectionConfig DatabaseWorkerTest::conf =  SqlDatabaseConnectionConfig(databaseName, driver);
 
 TEST_F(DatabaseWorkerTest, SQLiteDriverAvailable)
 {

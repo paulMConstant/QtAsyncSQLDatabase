@@ -6,6 +6,7 @@
 #include <QString>
 #include <QSqlDatabase>
 
+#include "QtAsyncSqlDatabase_global.h"
 #include "columnvaluecomparison.h"
 #include "sqldatabaseconnectionconfig.h"
 
@@ -13,13 +14,13 @@
  * \brief Builds and executes SQL queries.
  * Owns a database connection.
  */
-class SqlDatabase : public QObject
+class QTASYNCSQLDATABASE_EXPORT SqlDatabase : public QObject
 {
     Q_OBJECT
   public:
     SqlDatabase() = delete;
     explicit SqlDatabase(const QString& connectionName,
-                            const DatabaseConnectionConfig& conf,
+                            const SqlDatabaseConnectionConfig& conf,
                             QObject* parent = nullptr) noexcept;
 
     [[nodiscard]] QStringList select(const QVector<QString>& what,
@@ -43,7 +44,7 @@ class SqlDatabase : public QObject
 
   private:
     const QString connectionName;
-    DatabaseConnectionConfig conf;
+    SqlDatabaseConnectionConfig conf;
 
     [[nodiscard]] inline QSqlDatabase db() const noexcept
     {return QSqlDatabase::database(connectionName, true);}

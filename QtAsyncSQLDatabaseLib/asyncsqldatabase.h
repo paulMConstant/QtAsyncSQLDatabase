@@ -12,13 +12,13 @@ Q_DECLARE_METATYPE(QVector<QString>);
  * \brief Asynchronous database worker.
  * Manages a query thread which uses the base functions of a SqlDatabase.
  */
-class AsyncSqlDatabase : public QObject
+class QTASYNCSQLDATABASE_EXPORT AsyncSqlDatabase : public QObject
 {
     Q_OBJECT
 public:
     AsyncSqlDatabase() = delete;
     explicit AsyncSqlDatabase(const QString& connectionName,
-                                 const DatabaseConnectionConfig& conf,
+                                 const SqlDatabaseConnectionConfig& conf,
                                  QObject* parent = nullptr) noexcept;
 
     void open() noexcept;
@@ -45,7 +45,7 @@ signals:
 
 private:
     QString connectionName;
-    DatabaseConnectionConfig conf;
+    SqlDatabaseConnectionConfig conf;
 
     QThread* thread;
     SqlDatabase* worker;

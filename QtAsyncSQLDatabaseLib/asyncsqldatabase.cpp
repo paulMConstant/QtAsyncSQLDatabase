@@ -3,7 +3,7 @@
 #include <QEventLoop>
 
 AsyncSqlDatabase::AsyncSqlDatabase(const QString& connectionName,
-                                         const DatabaseConnectionConfig& conf,
+                                         const SqlDatabaseConnectionConfig& conf,
                                          QObject* parent) noexcept:
     QObject(parent), connectionName(connectionName), conf(conf)
 {
